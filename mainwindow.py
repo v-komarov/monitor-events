@@ -17,7 +17,6 @@ class MFrame(wx.Frame):
         wx.Frame.__init__(self, None, 1, "monitor-events", size=(700,500), style=wx.DEFAULT_FRAME_STYLE)
         self.MId=wx.NewId()
 
-        #self.Bind(wx.EVT_ZENOSS_NEW_EVENT, self.zenoss_event)
         self.Bind(EVT_ZENOSS_NEW_EVENT, self.zenoss_event)
         t = threading.Thread(target=GetEvents, args=(self, evt_zenoss_new_event))
         t.setDaemon(True)
@@ -25,7 +24,7 @@ class MFrame(wx.Frame):
 
         self.panel = wx.Panel(self, wx.ID_ANY)
 
-        el = EventsList(self.panel)
+        self.el = EventsList(self.panel)
 
         gBtn = wx.Button(self.panel, 10, "Группировки", (-1,-1))
         cb = wx.ComboBox(self.panel, 500, "Все", (-1, -1), (160, -1), ['Все','Красноярск','Иркутск','Чита'], wx.CB_DROPDOWN)
@@ -38,7 +37,7 @@ class MFrame(wx.Frame):
         gbsizer.Add(gBtn, 0, wx.ALL, 5)
         ssizer.Add(cb, 0, wx.ALL, 5)
 
-        gridsizer.Add(el, 0, wx.ALL)
+        gridsizer.Add(self.el, 0, wx.ALL)
 
         toolsizer.Add(gbsizer, 0, wx.ALL)
         toolsizer.Add(ssizer, 0, wx.ALL)
@@ -53,7 +52,7 @@ class MFrame(wx.Frame):
 
 
     def zenoss_event(self,evt):
-        print evt.m
+        self.el.zenoss_evt(evt)
 
 
 
