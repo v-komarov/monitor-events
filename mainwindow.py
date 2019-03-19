@@ -5,7 +5,7 @@ import wx
 import wx.lib.newevent as NE
 import threading
 
-from gridtable import EventsList
+from datatable import EventsList
 from eventsdata import GetEvents
 
 
@@ -24,10 +24,10 @@ class MFrame(wx.Frame):
 
         self.panel = wx.Panel(self, wx.ID_ANY)
 
-        self.el = EventsList(self.panel)
+        self.lst = EventsList(self.panel,-1)
 
         gBtn = wx.Button(self.panel, 10, "Группировки", (-1,-1))
-        cb = wx.ComboBox(self.panel, 500, "Все", (-1, -1), (160, -1), ['Все','Красноярск','Иркутск','Чита'], wx.CB_DROPDOWN)
+        self.cb = wx.ComboBox(self.panel, 500, "Все", (-1, -1), (160, -1), ['Все','Красноярск','Иркутск','Чита'], wx.CB_DROPDOWN|wx.CB_READONLY)
         topSizer = wx.BoxSizer(wx.VERTICAL)
         toolsizer = wx.BoxSizer(wx.HORIZONTAL)
         gbsizer = wx.BoxSizer(wx.VERTICAL)
@@ -35,9 +35,9 @@ class MFrame(wx.Frame):
         gridsizer = wx.BoxSizer(wx.HORIZONTAL)
 
         gbsizer.Add(gBtn, 0, wx.ALL, 5)
-        ssizer.Add(cb, 0, wx.ALL, 5)
+        ssizer.Add(self.cb, 0, wx.ALL, 5)
 
-        gridsizer.Add(self.el, 0, wx.ALL)
+        gridsizer.Add(self.lst, 0, wx.ALL)
 
         toolsizer.Add(gbsizer, 0, wx.ALL)
         toolsizer.Add(ssizer, 0, wx.ALL)
@@ -49,10 +49,9 @@ class MFrame(wx.Frame):
         topSizer.Fit(self)
 
 
-
-
     def zenoss_event(self,evt):
-        self.el.zenoss_evt(evt)
+        self.lst.zenoss_evt(evt)
+
 
 
 
