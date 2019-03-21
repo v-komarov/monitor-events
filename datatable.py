@@ -3,7 +3,7 @@
 import sys
 import json
 import wx
-
+from devices import DevicesFrame
 
 
 class EventsList(wx.ListCtrl):
@@ -11,6 +11,8 @@ class EventsList(wx.ListCtrl):
     def __init__(self, parent, ID, pos=(0,0), size=(2050,2000), style=wx.LC_REPORT|wx.SUNKEN_BORDER):
         wx.ListCtrl.__init__(self, parent, ID, pos, size, style)
 
+
+        self.SelectedEvId = set()
 
         self.InsertColumn(0, "evid")
         self.InsertColumn(1, "LastSeen")
@@ -44,6 +46,26 @@ class EventsList(wx.ListCtrl):
 
 
         self.bottom_item = None
+
+        self.Bind(wx.EVT_COMMAND_RIGHT_CLICK, self.OnRightClick)
+        self.Bind(wx.EVT_RIGHT_UP, self.OnRightClick)
+        self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.SelectItem)
+        self.Bind(wx.EVT_LIST_ITEM_DESELECTED, self.DeselectItem)
+
+
+
+
+    def SelectItem(self,evt):
+        self.SelectedEvId.add(self.GetItemText(evt.m_itemIndex))
+
+
+    def DeselectItem(self,evt):
+        if self.GetItemText(evt.m_itemIndex) in self.SelectedEvId:
+            self.SelectedEvId.remove(self.GetItemText(evt.m_itemIndex))
+
+
+
+
 
 
 
@@ -91,7 +113,11 @@ class EventsList(wx.ListCtrl):
 
         elif item != -1:
 
+            evid = self.GetItemText(item)
+            if evid in self.SelectedEvId:
+                self.SelectedEvId.remove(evid)
             self.DeleteItem(item)
+
 
             pos = self.InsertStringItem(0,e['evid'])
 
@@ -113,6 +139,62 @@ class EventsList(wx.ListCtrl):
 
         if self.GetItemCount() > 5000:
             self.DeleteAllItems()
+            self.SelectedEvId = set()
 
 
 
+    def OnRightClick(self, event):
+
+        if not hasattr(self, "popupID1"):
+            self.popupID1 = wx.NewId()
+            self.popupID2 = wx.NewId()
+            self.popupID3 = wx.NewId()
+
+            self.Bind(wx.EVT_MENU, self.ToGroup, id=self.popupID1)
+            self.Bind(wx.EVT_MENU, self.IpInfo, id=self.popupID2)
+            self.Bind(wx.EVT_MENU, self.DeleteSelected, id=self.popupID3)
+
+        menu = wx.Menu()
+        menu.Append(self.popupID1, u"В группу")
+        menu.Append(self.popupID2, u"Информация по ip адресу")
+        menu.AppendSeparator()
+        menu.Append(self.popupID3, u"Удалить")
+
+        self.PopupMenu(menu)
+        menu.Destroy()
+
+
+
+    ### --- Удаление выделенных строк ---
+    def DeleteSelected(self,evt):
+
+        for evid in list(self.SelectedEvId):
+            item = self.FindItem(-1,evid)
+            if item != -1:
+                if self.GetItemText(item) in self.SelectedEvId:
+                    self.SelectedEvId.remove(evid)
+                self.DeleteItem(item)
+
+
+
+    ### --- Информация об устройствах по ip адресам
+    def IpInfo(self,evt):
+        ips = set()
+        for evid in list(self.SelectedEvId):
+            item = self.FindItem(-1,evid)
+            ips.add(self.GetItemText(item,col=7))
+
+        f = DevicesFrame(ips)
+        f.Show(True)
+
+
+
+    ### --- Отправка событий в группу
+    def ToGroup(self,evt):
+
+        for evid in list(self.SelectedEvId):
+            item = self.FindItem(-1,evid)
+            if item != -1:
+                if self.GetItemText(item) in self.SelectedEvId:
+                    self.SelectedEvId.remove(evid)
+                self.DeleteItem(item)
