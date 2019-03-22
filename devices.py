@@ -23,26 +23,36 @@ class DevicesFrame(wx.Frame):
 
         self.lst = DevicesList(self.panel,-1)
         self.lst.appendRow(ips)
+        self.tst = wx.TextCtrl(self.panel, -1, self.addressstr(ips), size=(600, 100), style=wx.TE_MULTILINE|wx.TE_READONLY)
 
         topSizer = wx.BoxSizer(wx.VERTICAL)
-        toolsizer = wx.BoxSizer(wx.HORIZONTAL)
-        gbsizer = wx.BoxSizer(wx.HORIZONTAL)
-        ssizer = wx.BoxSizer(wx.HORIZONTAL)
-        gridsizer = wx.BoxSizer(wx.HORIZONTAL)
+        lsizer = wx.BoxSizer(wx.HORIZONTAL)
+        tsizer = wx.BoxSizer(wx.HORIZONTAL)
 
 
-        gridsizer.Add(self.lst, 0, wx.ALL)
+        lsizer.Add(self.lst, 0, wx.ALL)
+        tsizer.Add(self.tst, 0, wx.ALL)
 
-        toolsizer.Add(gbsizer, 0, wx.ALL)
-        toolsizer.Add(ssizer, 0, wx.ALL)
-
-        topSizer.Add(toolsizer, 0, wx.ALL)
-        topSizer.Add(gridsizer, 0, wx.ALL)
+        topSizer.Add(lsizer, 0, wx.ALL)
+        topSizer.Add(tsizer, 0, wx.ALL)
 
         self.panel.SetSizer(topSizer)
         topSizer.Fit(self)
 
 
+
+
+    # Список географических адресов
+    def addressstr(self,ips):
+
+        query_args = { 'action':'writeaddressstr', 'iplist':";".join(list(ips)) }
+        data = urllib.urlencode(query_args)
+        request = urllib2.Request(zkl_service, data)
+        response = urllib2.urlopen(request)
+        data = response.read()
+        response.close()
+        address = json.loads(data)
+        return address['address']
 
 
 
@@ -116,12 +126,4 @@ class DevicesList(wx.ListCtrl):
         self.SetStringItem(pos, 4, u"{}".format(tech))
         self.SetStringItem(pos, 5, u"{}".format(reserv))
 
-
-        query_args = { 'action':'writeaddressstr', 'iplist':";".join(list(ips)) }
-        data = urllib.urlencode(query_args)
-        request = urllib2.Request(zkl_service, data)
-        response = urllib2.urlopen(request)
-        data = response.read()
-        response.close()
-        print json.loads(data)
 
