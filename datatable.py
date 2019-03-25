@@ -3,13 +3,23 @@
 import sys
 import json
 import wx
+import wx.lib.newevent as NE
 from devices import DevicesFrame
+from filters import FiltersEvents
+from eventsdata import GetEventsTopic
+
+
+
+evt_zenoss_new_event, EVT_ZENOSS_NEW_EVENT = NE.NewEvent()
 
 
 class EventsList(wx.ListCtrl):
 
     def __init__(self, parent, ID, pos=(0,0), size=(2050,2000), style=wx.LC_REPORT|wx.SUNKEN_BORDER):
         wx.ListCtrl.__init__(self, parent, ID, pos, size, style)
+
+
+
 
 
         self.SelectedEvId = set()
@@ -67,23 +77,46 @@ class EventsList(wx.ListCtrl):
 
 
 
+    ### --- Загрузка всех событий топика
+    def zenoss_evt_h(self, evt):
+        for e in GetEventsTopic():
+            #print e
+            evt = evt_zenoss_new_event(m=e)
+            self.zenoss_evt(evt)
 
 
+
+
+
+    ### ---Текущие события
     def zenoss_evt(self, evt):
-        print evt.m
 
-        zenoss_source = self.GetTopLevelParent().cb.GetStringSelection()
 
-        e = json.loads(evt.m)
-        pref = e['evid'].split('-')[0]
-        if pref == "krsk" and zenoss_source == u"Красноярск":
-            self.appendRow(e)
-        elif pref == "irk" and zenoss_source == u"Иркутск":
-            self.appendRow(e)
-        elif pref == "chi" and zenoss_source == u"Чита":
-            self.appendRow(e)
-        elif zenoss_source == u"Все":
-            self.appendRow(e)
+        if self.GetTopLevelParent().evt_flag:
+
+            print evt.m
+
+            # Источник
+            zenoss_source = self.GetTopLevelParent().cb.GetStringSelection()
+
+            # Классы устройсв
+            devclass_list = self.GetTopLevelParent().devclass.GetCheckedStrings()
+
+            # Классы событий
+            evtclass_list = self.GetTopLevelParent().evtclass.GetCheckedStrings()
+
+
+            e = json.loads(evt.m)
+
+            # Отображать или не отображать событие
+            if FiltersEvents(e, zenoss_source, devclass_list, evtclass_list):
+                self.appendRow(e)
+
+
+
+
+
+
 
 
     def appendRow(self, e):
@@ -113,27 +146,29 @@ class EventsList(wx.ListCtrl):
 
         elif item != -1:
 
-            evid = self.GetItemText(item)
-            if evid in self.SelectedEvId:
-                self.SelectedEvId.remove(evid)
-            self.DeleteItem(item)
+            #evid = self.GetItemText(item)
+            #if evid in self.SelectedEvId:
+            #    self.SelectedEvId.remove(evid)
+            #self.DeleteItem(item)
 
 
-            pos = self.InsertStringItem(0,e['evid'])
+            #pos = self.InsertStringItem(0,e['evid'])
+            #pos = self.GetItem(item)
 
-            self.SetStringItem(pos, 0, e['evid'])
-            self.SetStringItem(pos, 1, e['last_seen'])
-            self.SetStringItem(pos, 2, e['first_seen'])
-            self.SetStringItem(pos, 3, e['device_group'])
-            self.SetStringItem(pos, 4, e['device_class'])
-            self.SetStringItem(pos, 5, e['event_class'])
-            self.SetStringItem(pos, 6, e['device_system'])
-            self.SetStringItem(pos, 7, e['device_net_address'])
-            self.SetStringItem(pos, 8, e['device_location'])
-            self.SetStringItem(pos, 9, e['element_identifier'])
-            self.SetStringItem(pos, 10, e['status'])
-            self.SetStringItem(pos, 11, e['severity'])
-            self.SetStringItem(pos, 12, e['summary'])
+
+            self.SetStringItem(item, 0, e['evid'])
+            self.SetStringItem(item, 1, e['last_seen'])
+            self.SetStringItem(item, 2, e['first_seen'])
+            self.SetStringItem(item, 3, e['device_group'])
+            self.SetStringItem(item, 4, e['device_class'])
+            self.SetStringItem(item, 5, e['event_class'])
+            self.SetStringItem(item, 6, e['device_system'])
+            self.SetStringItem(item, 7, e['device_net_address'])
+            self.SetStringItem(item, 8, e['device_location'])
+            self.SetStringItem(item, 9, e['element_identifier'])
+            self.SetStringItem(item, 10, e['status'])
+            self.SetStringItem(item, 11, e['severity'])
+            self.SetStringItem(item, 12, e['summary'])
 
 
 
@@ -198,3 +233,8 @@ class EventsList(wx.ListCtrl):
                 if self.GetItemText(item) in self.SelectedEvId:
                     self.SelectedEvId.remove(evid)
                 self.DeleteItem(item)
+
+
+    ### --- Удаленние всех событий ---
+    def DeleteAllEvents(self,evt):
+        self.DeleteAllItems()
