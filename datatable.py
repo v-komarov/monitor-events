@@ -7,7 +7,7 @@ import wx.lib.newevent as NE
 from devices import DevicesFrame
 from filters import FiltersEvents
 from eventsdata import GetEventsTopic
-
+from groups import CheckGroup
 
 
 evt_zenoss_new_event, EVT_ZENOSS_NEW_EVENT = NE.NewEvent()
@@ -109,8 +109,9 @@ class EventsList(wx.ListCtrl):
             e = json.loads(evt.m)
 
             # Отображать или не отображать событие
-            if FiltersEvents(e, zenoss_source, devclass_list, evtclass_list):
-                self.appendRow(e)
+            if CheckGroup(evt):
+                if FiltersEvents(e, zenoss_source, devclass_list, evtclass_list):
+                    self.appendRow(e)
 
 
 

@@ -7,6 +7,7 @@ import threading
 
 from datatable import EventsList
 from eventsdata import GetEvents
+from groups import GroupList
 
 
 evt_zenoss_new_event, EVT_ZENOSS_NEW_EVENT = NE.NewEvent()
@@ -112,6 +113,7 @@ class MFrame(wx.Frame):
 
         cBtn.Bind(wx.EVT_BUTTON, self.clear_evts, cBtn)
         lBtn.Bind(wx.EVT_BUTTON, self.zenoss_event_h, lBtn)
+        gBtn.Bind(wx.EVT_BUTTON, self.groups_dialog, gBtn)
 
 
     def zenoss_event(self,evt):
@@ -127,6 +129,11 @@ class MFrame(wx.Frame):
     def clear_evts(self,evt):
         self.lst.DeleteAllEvents(evt)
 
+
+    ## Список групп
+    def groups_dialog(self, evt):
+        dlg = GroupList(self, -1, u"Группы событий", size=(550, 200), style=wx.DEFAULT_DIALOG_STYLE)
+        dlg.ShowWindowModal()
 
 
 
