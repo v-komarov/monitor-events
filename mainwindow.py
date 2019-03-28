@@ -7,7 +7,7 @@ import threading
 
 from datatable import EventsList
 from eventsdata import GetEvents
-from groups import GroupList
+from groups import GroupList, GroupFrame, GroupName
 
 
 evt_zenoss_new_event, EVT_ZENOSS_NEW_EVENT = NE.NewEvent()
@@ -133,7 +133,12 @@ class MFrame(wx.Frame):
     ## Список групп
     def groups_dialog(self, evt):
         dlg = GroupList(self, -1, u"Группы событий", size=(550, 200), style=wx.DEFAULT_DIALOG_STYLE)
-        dlg.ShowWindowModal()
+        if dlg.ShowModal() == wx.ID_OK:
+            group_id = dlg.GetValue()
+            gf = GroupFrame(group_id, GroupName(group_id))
+            gf.Show()
+
+        dlg.Destroy()
 
 
 

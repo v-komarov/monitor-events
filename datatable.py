@@ -7,7 +7,7 @@ import wx.lib.newevent as NE
 from devices import DevicesFrame
 from filters import FiltersEvents
 from eventsdata import GetEventsTopic
-from groups import CheckGroup
+from groups import CheckGroup, GroupList, events2group
 
 
 evt_zenoss_new_event, EVT_ZENOSS_NEW_EVENT = NE.NewEvent()
@@ -94,7 +94,7 @@ class EventsList(wx.ListCtrl):
 
         if self.GetTopLevelParent().evt_flag:
 
-            print evt.m
+            #print evt.m
 
             # Источник
             zenoss_source = self.GetTopLevelParent().cb.GetStringSelection()
@@ -228,12 +228,21 @@ class EventsList(wx.ListCtrl):
     ### --- Отправка событий в группу
     def ToGroup(self,evt):
 
-        for evid in list(self.SelectedEvId):
-            item = self.FindItem(-1,evid)
-            if item != -1:
-                if self.GetItemText(item) in self.SelectedEvId:
-                    self.SelectedEvId.remove(evid)
-                self.DeleteItem(item)
+        dlg = GroupList(self, -1, u"Группы событий", size=(550, 200), style=wx.DEFAULT_DIALOG_STYLE)
+        #dlg.ShowWindowModal()
+        if dlg.ShowModal() == wx.ID_OK:
+            group_id = dlg.GetValue()
+            if group_id:
+                events2group(group_id, list(self.SelectedEvId))
+                for evid in list(self.SelectedEvId):
+                    item = self.FindItem(-1,evid)
+                    if item != -1:
+                        if self.GetItemText(item) in self.SelectedEvId:
+                            self.SelectedEvId.remove(evid)
+                        self.DeleteItem(item)
+
+        dlg.Destroy()
+
 
 
     ### --- Удаленние всех событий ---

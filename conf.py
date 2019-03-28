@@ -9,7 +9,7 @@ zkl_service = 'http://10.6.0.22:8000/equipment/devices/apidata/'
 
 # Постгрес
 pg_host = '10.6.0.246'
-pg_port= 5432
+pg_port= 6432
 pg_base = 'monitor'
 pg_user = 'muser'
 pg_password = 'av4uchau'
