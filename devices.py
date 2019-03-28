@@ -7,7 +7,7 @@ import sys
 
 from conf import zkl_service
 
-
+### Вывод ЗКЛ
 class DevicesFrame(wx.Frame):
     def __init__(self,ips):
         wx.Frame.__init__(self, None, 1, u"Информация по устройствам", size=(600,400), style=wx.DEFAULT_FRAME_STYLE ^ wx.RESIZE_BORDER)

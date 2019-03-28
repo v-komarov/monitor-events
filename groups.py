@@ -8,6 +8,8 @@ import uuid
 import datetime
 from pymemcache.client.hash import HashClient
 
+from devices import DevicesFrame
+
 from conf import memcach, pg_host, pg_port, pg_base, pg_user, pg_password
 
 
@@ -113,7 +115,7 @@ class GroupList(wx.Dialog):
     # Создание новой группы
     def add_group(self, evt):
         dlg = wx.TextEntryDialog(self, u'Задайте название группы', u'Создание новой группы')
-        dlg.SetValue(u"Проверка")
+        dlg.SetValue(u"Группа")
         if dlg.ShowModal() == wx.ID_OK:
             newgroup = dlg.GetValue()
             if newgroup != u"":
@@ -222,6 +224,22 @@ class GroupFrame(wx.Frame):
         topSizer.Fit(self)
 
         rBtn.Bind(wx.EVT_BUTTON, self.lst.appendRow)
+        iBtn.Bind(wx.EVT_BUTTON, self.InfoGroup, iBtn)
+
+
+
+    ### Информация по группе
+    def InfoGroup(self, evt):
+        # Список ip
+        ips = []
+        cursor.execute("SELECT event_data FROM groups_data WHERE group_id=%s", [self.group_id,])
+        data = cursor.fetchall()
+        for ip in data:
+            ips.append(ip[0]['device_net_address'])
+
+        f = DevicesFrame(ips)
+        f.Show(True)
+
 
 
 
@@ -275,12 +293,32 @@ class EventsGroupList(wx.ListCtrl):
 
 
     def SelectItem(self,evt):
-        self.SelectedEvId = evt.m_itemIndex
+        self.SelectedEvId = self.GetItemText(evt.m_itemIndex)
 
 
-
+    ## Меню
     def OnRightClick(self, event):
-        pass
+        if not hasattr(self, "popupID1"):
+            self.popupID1 = wx.NewId()
+
+            self.Bind(wx.EVT_MENU, self.DeleteRec, id=self.popupID1)
+
+        menu = wx.Menu()
+        menu.Append(self.popupID1, u"Удалить")
+
+        self.PopupMenu(menu)
+        menu.Destroy()
+
+
+
+
+    ### Удаление строки с данными
+    def DeleteRec(self, evt):
+        evid =  self.SelectedEvId
+        if evid != None:
+            client.delete(evid)
+            cursor.execute("DELETE FROM groups_data WHERE event_id=%s", [evid,])
+            self.appendRow(evt)
 
 
 
