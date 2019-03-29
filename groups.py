@@ -24,7 +24,11 @@ cursor = conn.cursor()
 def GroupName(group_id):
     cursor.execute("SELECT group_name FROM groups_list WHERE group_id=%s;", [group_id,])
     data = cursor.fetchone()
-    name = data[0].decode('utf-8').encode('cp1251') if wx.Platform == "__WXMSW__" else data[0]
+    name = data[0]
+    if wx.Platform == "__WXMSW__":
+        import platform
+        if platform.win32_ver()[0] == '7':
+            name = data[0].decode('utf-8').encode('cp1251')
 
     return name
 
@@ -183,7 +187,12 @@ class GroupNameList(wx.ListCtrl):
         index = 0
         for row in cursor.fetchall():
             pos = self.InsertStringItem(index, row[0])
-            group_name = row[1].decode('utf-8').encode('cp1251') if wx.Platform == "__WXMSW__" else row[1]
+            group_name = row[1]
+            if wx.Platform == "__WXMSW__":
+                import platform
+                if platform.win32_ver()[0] == '7':
+                    group_name = data[0].decode('utf-8').encode('cp1251')
+
             self.SetStringItem(pos, 0, group_name)
             self.myRowDict[index] = row[0]
             index += 1
