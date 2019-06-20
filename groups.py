@@ -6,6 +6,7 @@ import sys
 import psycopg2
 import uuid
 import datetime
+import platform
 from pymemcache.client.hash import HashClient
 
 from devices import DevicesFrame
@@ -26,9 +27,10 @@ def GroupName(group_id):
     data = cursor.fetchone()
     name = data[0]
     if wx.Platform == "__WXMSW__":
-        import platform
+
         if platform.win32_ver()[0] == '7':
             name = data[0].decode('utf-8').encode('cp1251')
+
 
     return name
 
@@ -189,7 +191,7 @@ class GroupNameList(wx.ListCtrl):
             pos = self.InsertStringItem(index, row[0])
             group_name = row[1]
             if wx.Platform == "__WXMSW__":
-                import platform
+
                 if platform.win32_ver()[0] == '7':
                     group_name = data[0].decode('utf-8').encode('cp1251')
 

@@ -15,4 +15,5 @@ pg_user = 'muser'
 pg_password = 'av4uchau'
 
 # memcached
-memcach = [('10.6.3.54', 11211),]
+#memcach = [('10.3.1.46',11211),]
+memcach = [('10.6.3.54',11211),]

@@ -75,6 +75,25 @@ class EventsList(wx.ListCtrl):
 
 
 
+    ### --- Поиск строки
+    def search_st(self,st):
+
+        count = self.GetItemCount()
+        cols = self.GetColumnCount()
+
+        if st == "":
+            for row in range(count):
+                self.Select(row, on=0)
+        else:
+            for row in range(count):
+                self.Select(row, on=0)
+                for col in range(cols):
+                    item = self.GetItem(itemId=row, col=col)
+                    if (item.GetText()).find(st) != -1:
+                        self.Select(row, on=1)
+                        break
+
+
 
 
     ### --- Загрузка всех событий топика
@@ -94,7 +113,7 @@ class EventsList(wx.ListCtrl):
 
         if self.GetTopLevelParent().evt_flag:
 
-            #print evt.m
+            print evt.m
 
             # Источник
             zenoss_source = self.GetTopLevelParent().cb.GetStringSelection()

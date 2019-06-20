@@ -84,11 +84,20 @@ class MFrame(wx.Frame):
         evtclass_label = wx.StaticText(self.panel, id=wx.ID_ANY, label=u"EventsClass")
         self.evtclass = wx.CheckListBox(self.panel, -1, size=(250, 80), choices=evtclass_list, style=wx.LB_HSCROLL)
 
+        ### Интерфейс поиск по ip
+        se_label = wx.StaticText(self.panel, id=wx.ID_ANY, label=u"Поиск")
+        self.search_str = wx.TextCtrl(self.panel, -1, "", size=(150, -1))
+        sBtn = wx.Button(self.panel, 10, u"Найти", (-1,-1))
+
+
+
         topSizer = wx.BoxSizer(wx.VERTICAL)
         toolsizer = wx.BoxSizer(wx.HORIZONTAL)
         gbsizer = wx.BoxSizer(wx.VERTICAL)
         ssizer = wx.BoxSizer(wx.HORIZONTAL)
         gridsizer = wx.BoxSizer(wx.HORIZONTAL)
+        searchsizer = wx.BoxSizer(wx.HORIZONTAL)
+
 
         gbsizer.Add(gBtn, 0, wx.ALL, 1)
         gbsizer.Add(cBtn, 0, wx.ALL, 1)
@@ -100,10 +109,15 @@ class MFrame(wx.Frame):
         ssizer.Add(evtclass_label, 0, wx.ALL|wx.ALIGN_TOP, 5)
         ssizer.Add(self.evtclass, 0, wx.ALL, 5)
 
+        searchsizer.Add(se_label, 0, wx.ALL, 5)
+        searchsizer.Add(self.search_str, 0, wx.ALL, 5)
+        searchsizer.Add(sBtn, 0, wx.ALL, 5)
+
         gridsizer.Add(self.lst, 0, wx.ALL)
 
         toolsizer.Add(gbsizer, 0, wx.ALL)
         toolsizer.Add(ssizer, 0, wx.ALL)
+        toolsizer.Add(searchsizer, 0, wx.ALL)
 
         topSizer.Add(toolsizer, 0, wx.ALL)
         topSizer.Add(gridsizer, 0, wx.ALL)
@@ -114,6 +128,13 @@ class MFrame(wx.Frame):
         cBtn.Bind(wx.EVT_BUTTON, self.clear_evts, cBtn)
         lBtn.Bind(wx.EVT_BUTTON, self.zenoss_event_h, lBtn)
         gBtn.Bind(wx.EVT_BUTTON, self.groups_dialog, gBtn)
+        sBtn.Bind(wx.EVT_BUTTON, self.search_ip, sBtn)
+
+
+    ## Поиск по строке
+    def search_ip(self,evt):
+        st = self.search_str.GetValue()
+        self.lst.search_st(st)
 
 
     def zenoss_event(self,evt):
