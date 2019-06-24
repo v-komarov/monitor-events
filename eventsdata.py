@@ -1,6 +1,7 @@
 #coding:utf-8
 
 from kafka import KafkaConsumer,TopicPartition
+from cassandra.cluster import Cluster
 import wx
 
 
@@ -8,7 +9,16 @@ import conf as co
 
 
 consumer = KafkaConsumer(co.ka_topic,bootstrap_servers=co.ka_server)
-consumer_h = KafkaConsumer(bootstrap_servers=co.ka_server, auto_offset_reset='earliest')
+#consumer_h = KafkaConsumer(bootstrap_servers=co.ka_server, auto_offset_reset='earliest')
+
+
+cluster = Cluster(co.ca_host,co.ca_port)
+session = cluster.connect()
+session.set_keyspace(co.ca_keyspace)
+
+
+
+
 
 def GetEvents(win, evt_zenoss_new_event):
 
@@ -18,6 +28,14 @@ def GetEvents(win, evt_zenoss_new_event):
 
 
 
+
+
+def GetEventsTopic():
+    for row in session.execute('SELECT data FROM events_buff'):
+        #print row[0]
+        yield row[0]
+
+"""
 def GetEventsTopic():
 
     tp = TopicPartition(co.ka_topic, 0)
@@ -30,6 +48,12 @@ def GetEventsTopic():
         yield m.value
         if m.offset == lastOffset - 1:
             break
+"""
+
+
+
+
+
 
 
 
