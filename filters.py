@@ -26,7 +26,7 @@ def FilterDevice(e, devclass_list):
         return True
 
     for item in devclass_list:
-        if e['device_class'].find(item) != 1:
+        if e['device_class'].find(item.encode("utf-8")) != -1:
             return True
 
     return False
@@ -39,7 +39,7 @@ def FilterEvent(e, evtclass_list):
         return True
 
     for item in evtclass_list:
-        if e['event_class'].find(item) != 1:
+        if e['event_class'].find(item.encode("utf-8")) != -1:
             return True
 
     return False

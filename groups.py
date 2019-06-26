@@ -9,6 +9,8 @@ import datetime
 import platform
 from pymemcache.client.hash import HashClient
 
+import icon as ic
+
 from devices import DevicesFrame
 
 from conf import memcach, pg_host, pg_port, pg_base, pg_user, pg_password
@@ -208,8 +210,9 @@ class GroupFrame(wx.Frame):
         wx.Frame.__init__(self, None, 1, group_name, size=(700,500), style=wx.DEFAULT_FRAME_STYLE)
         self.MId=wx.NewId()
 
-        icon = wx.EmptyIcon()
-        icon.CopyFromBitmap(wx.Bitmap("icon.ico", wx.BITMAP_TYPE_ANY))
+        #icon = wx.EmptyIcon()
+        #icon.CopyFromBitmap(wx.Bitmap("icon.ico", wx.BITMAP_TYPE_ANY))
+        icon = ic.icon.GetIcon()
         self.SetIcon(icon)
 
         self.group_id = group_id

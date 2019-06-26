@@ -5,6 +5,8 @@ import urllib2, urllib
 import json
 import sys
 
+import icon as ic
+
 from conf import zkl_service
 
 ### Вывод ЗКЛ
@@ -15,8 +17,9 @@ class DevicesFrame(wx.Frame):
 
 
 
-        icon = wx.EmptyIcon()
-        icon.CopyFromBitmap(wx.Bitmap("icon.ico", wx.BITMAP_TYPE_ANY))
+        #icon = wx.EmptyIcon()
+        #icon.CopyFromBitmap(wx.Bitmap("icon.ico", wx.BITMAP_TYPE_ANY))
+        icon = ic.icon.GetIcon()
         self.SetIcon(icon)
 
         self.panel = wx.Panel(self, wx.ID_ANY)

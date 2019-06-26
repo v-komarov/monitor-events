@@ -5,6 +5,8 @@ import wx
 import wx.lib.newevent as NE
 import threading
 
+import icon as ic
+
 from datatable import EventsList
 from eventsdata import GetEvents
 from groups import GroupList, GroupFrame, GroupName
@@ -18,8 +20,9 @@ class MFrame(wx.Frame):
         wx.Frame.__init__(self, None, 1, "monitor-events", size=(700,500), style=wx.DEFAULT_FRAME_STYLE)
         self.MId=wx.NewId()
 
-        icon = wx.EmptyIcon()
-        icon.CopyFromBitmap(wx.Bitmap("icon.ico", wx.BITMAP_TYPE_ANY))
+        #icon = wx.EmptyIcon()
+        #icon.CopyFromBitmap(wx.Bitmap("icon.ico", wx.BITMAP_TYPE_ANY))
+        icon = ic.icon.GetIcon()
         self.SetIcon(icon)
 
         self.evt_flag = True # Флаг разрешения прима событий
@@ -35,7 +38,7 @@ class MFrame(wx.Frame):
 
 
         devclass_list = [
-            u'/Network/Sweetch',
+            u'/Network/Switch',
             u'/Power/UPS',
             u'/Network/Modem',
             u'/Network/DSLAM',
