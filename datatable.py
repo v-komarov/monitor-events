@@ -90,6 +90,7 @@ class EventsList(wx.ListCtrl):
                 for col in range(cols):
                     item = self.GetItem(itemId=row, col=col)
                     if (item.GetText()).find(st) != -1:
+                        self.Focus(row)
                         self.Select(row, on=1)
                         break
 
