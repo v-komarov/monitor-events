@@ -2,18 +2,24 @@
 
 
 
+
+city_source = {
+    "krsk": u"Красноярск",
+    "irk": u"Иркутск",
+    "chi": u"Чита"
+}
+
+
+
+
 ## Фильтр по источнику
 def FilterSource(e, zenoss_source):
 
+    #print zenoss_source
+
     pref = e['evid'].split('-')[0]
 
-    if pref == "krsk" and zenoss_source == u"Красноярск":
-        return True
-    elif pref == "irk" and zenoss_source == u"Иркутск":
-        return True
-    elif pref == "chi" and zenoss_source == u"Чита":
-        return True
-    elif zenoss_source == u"Все":
+    if city_source[pref] in zenoss_source:
         return True
 
     return False

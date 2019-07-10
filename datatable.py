@@ -117,7 +117,7 @@ class EventsList(wx.ListCtrl):
             print evt.m
 
             # Источник
-            zenoss_source = self.GetTopLevelParent().cb.GetStringSelection()
+            zenoss_source = self.GetTopLevelParent().cb.GetCheckedStrings()
 
             # Классы устройсв
             devclass_list = self.GetTopLevelParent().devclass.GetCheckedStrings()

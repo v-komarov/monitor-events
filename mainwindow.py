@@ -77,11 +77,21 @@ class MFrame(wx.Frame):
             u'/Status/interface',
         ]
 
+        city_list = [
+            u'Красноярск',
+            u'Иркутск',
+            u'Чита'
+        ]
+
+
+
+
         gBtn = wx.Button(self.panel, 10, u"Группы", (-1,-1))
         cBtn = wx.Button(self.panel, 10, u"Очистить", (-1,-1))
         lBtn = wx.Button(self.panel, 10, u"Загрузить", (-1,-1))
+
         cb_label = wx.StaticText(self.panel, id=wx.ID_ANY, label=u"Источник")
-        self.cb = wx.ComboBox(self.panel, 500, u"Все", (-1, -1), (160, -1), [u'Все',u'Красноярск',u'Иркутск',u'Чита'], wx.CB_DROPDOWN|wx.CB_READONLY)
+        self.cb = wx.CheckListBox(self.panel, -1, size=(250, 80), choices=city_list, style=wx.LB_HSCROLL)
         devclass_label = wx.StaticText(self.panel, id=wx.ID_ANY, label=u"DevicesClass")
         self.devclass = wx.CheckListBox(self.panel, -1, size=(250, 80), choices=devclass_list, style=wx.LB_HSCROLL)
         evtclass_label = wx.StaticText(self.panel, id=wx.ID_ANY, label=u"EventsClass")
@@ -91,7 +101,6 @@ class MFrame(wx.Frame):
         se_label = wx.StaticText(self.panel, id=wx.ID_ANY, label=u"Поиск")
         self.search_str = wx.TextCtrl(self.panel, -1, "", size=(150, -1))
         sBtn = wx.Button(self.panel, 10, u"Найти", (-1,-1))
-
 
 
         topSizer = wx.BoxSizer(wx.VERTICAL)
