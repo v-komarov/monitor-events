@@ -7,7 +7,7 @@ import wx.lib.newevent as NE
 from devices import DevicesFrame
 from filters import FiltersEvents
 from eventsdata import GetEventsTopic
-from groups import CheckGroup, GroupList, events2group
+
 
 
 evt_zenoss_new_event, EVT_ZENOSS_NEW_EVENT = NE.NewEvent()
@@ -129,9 +129,8 @@ class EventsList(wx.ListCtrl):
             e = json.loads(evt.m)
 
             # Отображать или не отображать событие
-            if CheckGroup(evt):
-                if FiltersEvents(e, zenoss_source, devclass_list, evtclass_list):
-                    self.appendRow(e)
+            if FiltersEvents(e, zenoss_source, devclass_list, evtclass_list):
+                self.appendRow(e)
 
 
 
@@ -202,16 +201,13 @@ class EventsList(wx.ListCtrl):
     def OnRightClick(self, event):
 
         if not hasattr(self, "popupID1"):
-            self.popupID1 = wx.NewId()
             self.popupID2 = wx.NewId()
             self.popupID3 = wx.NewId()
 
-            self.Bind(wx.EVT_MENU, self.ToGroup, id=self.popupID1)
             self.Bind(wx.EVT_MENU, self.IpInfo, id=self.popupID2)
             self.Bind(wx.EVT_MENU, self.DeleteSelected, id=self.popupID3)
 
         menu = wx.Menu()
-        menu.Append(self.popupID1, u"В группу")
         menu.Append(self.popupID2, u"Информация по ip адресу")
         menu.AppendSeparator()
         menu.Append(self.popupID3, u"Удалить")
@@ -242,26 +238,6 @@ class EventsList(wx.ListCtrl):
 
         f = DevicesFrame(ips)
         f.Show(True)
-
-
-
-    ### --- Отправка событий в группу
-    def ToGroup(self,evt):
-
-        dlg = GroupList(self, -1, u"Группы событий", size=(550, 200), style=wx.DEFAULT_DIALOG_STYLE)
-        #dlg.ShowWindowModal()
-        if dlg.ShowModal() == wx.ID_OK:
-            group_id = dlg.GetValue()
-            if group_id:
-                events2group(group_id, list(self.SelectedEvId))
-                for evid in list(self.SelectedEvId):
-                    item = self.FindItem(-1,evid)
-                    if item != -1:
-                        if self.GetItemText(item) in self.SelectedEvId:
-                            self.SelectedEvId.remove(evid)
-                        self.DeleteItem(item)
-
-        dlg.Destroy()
 
 
 

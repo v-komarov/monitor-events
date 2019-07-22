@@ -19,7 +19,7 @@ def FilterSource(e, zenoss_source):
 
     pref = e['evid'].split('-')[0]
 
-    if city_source[pref] in zenoss_source:
+    if len(zenoss_source) == 0 or city_source[pref] in zenoss_source:
         return True
 
     return False

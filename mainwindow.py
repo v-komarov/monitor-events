@@ -9,7 +9,7 @@ import icon as ic
 
 from datatable import EventsList
 from eventsdata import GetEvents
-from groups import GroupList, GroupFrame, GroupName
+
 
 
 evt_zenoss_new_event, EVT_ZENOSS_NEW_EVENT = NE.NewEvent()
@@ -20,8 +20,6 @@ class MFrame(wx.Frame):
         wx.Frame.__init__(self, None, 1, "monitor-events", size=(700,500), style=wx.DEFAULT_FRAME_STYLE)
         self.MId=wx.NewId()
 
-        #icon = wx.EmptyIcon()
-        #icon.CopyFromBitmap(wx.Bitmap("icon.ico", wx.BITMAP_TYPE_ANY))
         icon = ic.icon.GetIcon()
         self.SetIcon(icon)
 
@@ -86,7 +84,6 @@ class MFrame(wx.Frame):
 
 
 
-        gBtn = wx.Button(self.panel, 10, u"Группы", (-1,-1))
         cBtn = wx.Button(self.panel, 10, u"Очистить", (-1,-1))
         lBtn = wx.Button(self.panel, 10, u"Загрузить", (-1,-1))
 
@@ -111,7 +108,6 @@ class MFrame(wx.Frame):
         searchsizer = wx.BoxSizer(wx.HORIZONTAL)
 
 
-        gbsizer.Add(gBtn, 0, wx.ALL, 1)
         gbsizer.Add(cBtn, 0, wx.ALL, 1)
         gbsizer.Add(lBtn, 0, wx.ALL, 1)
         ssizer.Add(cb_label, 0, wx.ALL|wx.ALIGN_TOP, 5)
@@ -139,7 +135,6 @@ class MFrame(wx.Frame):
 
         cBtn.Bind(wx.EVT_BUTTON, self.clear_evts, cBtn)
         lBtn.Bind(wx.EVT_BUTTON, self.zenoss_event_h, lBtn)
-        gBtn.Bind(wx.EVT_BUTTON, self.groups_dialog, gBtn)
         sBtn.Bind(wx.EVT_BUTTON, self.search_ip, sBtn)
 
 
@@ -162,16 +157,6 @@ class MFrame(wx.Frame):
     def clear_evts(self,evt):
         self.lst.DeleteAllEvents(evt)
 
-
-    ## Список групп
-    def groups_dialog(self, evt):
-        dlg = GroupList(self, -1, u"Группы событий", size=(550, 200), style=wx.DEFAULT_DIALOG_STYLE)
-        if dlg.ShowModal() == wx.ID_OK:
-            group_id = dlg.GetValue()
-            gf = GroupFrame(group_id, GroupName(group_id))
-            gf.Show()
-
-        dlg.Destroy()
 
 
 
