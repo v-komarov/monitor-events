@@ -145,7 +145,7 @@ class EventsList(wx.ListCtrl):
         item = self.FindItem(-1,e['evid'])
 
 
-        if e['severity'] == 'Critical' and e['status'] == 'New' and item == -1:
+        if e['severity'] == 'Critical' and e['status'] in ['New', 'Suppressed'] and item == -1:
 
 
             pos = self.InsertStringItem(0,e['evid'])

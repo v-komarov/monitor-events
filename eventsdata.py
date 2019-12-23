@@ -9,12 +9,11 @@ import conf as co
 
 
 consumer = KafkaConsumer(co.ka_topic,bootstrap_servers=co.ka_server)
-#consumer_h = KafkaConsumer(bootstrap_servers=co.ka_server, auto_offset_reset='earliest')
 
 
-cluster = Cluster(co.ca_host,co.ca_port)
-session = cluster.connect()
-session.set_keyspace(co.ca_keyspace)
+#cluster = Cluster(co.ca_host,co.ca_port)
+#session = cluster.connect()
+#session.set_keyspace(co.ca_keyspace)
 
 
 
@@ -31,9 +30,14 @@ def GetEvents(win, evt_zenoss_new_event):
 
 
 def GetEventsTopic():
-    for row in session.execute('SELECT data FROM events_buff'):
+    #for row in session.execute('SELECT data FROM events_buff'):
         #print row[0]
-        yield row[0]
+        #yield row[0]
+    yield (0,0,0,0,0,0,0,0,0,0,0)
+
+
+
+
 
 """
 def GetEventsTopic():

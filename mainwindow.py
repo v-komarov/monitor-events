@@ -134,7 +134,7 @@ class MFrame(wx.Frame):
         topSizer.Fit(self)
 
         cBtn.Bind(wx.EVT_BUTTON, self.clear_evts, cBtn)
-        lBtn.Bind(wx.EVT_BUTTON, self.zenoss_event_h, lBtn)
+        #lBtn.Bind(wx.EVT_BUTTON, self.zenoss_event_h, lBtn)
         sBtn.Bind(wx.EVT_BUTTON, self.search_ip, sBtn)
 
 
